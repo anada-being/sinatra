@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <mata charset="utf-8">
+  <title>メモアプリ</title>
+</head>
+<body>
+  <h1>メモアプリ</h1>
+    <p><%= @title %></p>
+    <p><%= @memo %></p>
+    <a class="btn" href="/memos">メモ一覧に戻る</a>
+  <form method="get" action="/memos/<%= params[:id] %>/edit">
+    <input type="submit" value="変更">
+  </form>
+  <form method="post" action="/memos/<%= params[:id] %>">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" value="削除">
+  </form>
+</body>
+</html>

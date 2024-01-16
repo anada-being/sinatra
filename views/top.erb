@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <mata charset="utf-8">
+  <title>メモアプリ</title>
+</head>
+<body>
+  <h1>メモアプリ</h1>
+  <form method="get" action="/memos/new">
+  <button class="add" type="submit">追加</button>
+  </form>
+  <ul>
+    <% @memos.each do |id, post| %>
+      <li>
+        <a href="/memos/<%= id %>"><%= post["title"] %></a>
+      </li>
+    <% end %>
+  </ul>
+</body>
+</html>
