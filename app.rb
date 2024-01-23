@@ -7,12 +7,12 @@ require 'cgi'
 enable :method_override
 FILE_PATH = 'memos.json'
 
-def get_memos
+def read_memos
   File.open(FILE_PATH) { |f| JSON.parse(f.read) }
 end
 
-def set_memos(memos)
-  File.open(FILE_PATH,'w') { |f| JSON.dump(memos, f) }
+def save_memos(memos)
+  File.open(FILE_PATH, 'w') { |f| JSON.dump(memos, f) }
 end
 
 def escape(text)
@@ -24,7 +24,7 @@ get '/' do
 end
 
 get '/memos' do
-  @memos = get_memos
+  @memos = read_memos
   erb :top
 end
 
@@ -33,7 +33,7 @@ get '/memos/new' do
 end
 
 get '/memos/:id' do
-  memos = get_memos
+  memos = read_memos
   @title = memos[params[:id]]['title']
   @memo = memos[params[:id]]['memo']
   erb :show
@@ -43,16 +43,16 @@ post '/memos' do
   title = escape(params[:title])
   memo = escape(params[:memo])
 
-  memos = get_memos
+  memos = read_memos
   id = (memos.keys.map(&:to_i).max + 1).to_s
   memos[id] = { 'title' => title, 'memo' => memo }
-  set_memos(memos)
+  save_memos(memos)
 
   redirect '/memos'
 end
 
 get '/memos/:id/edit' do
-  memos = get_memos
+  memos = read_memos
   @title = memos[params[:id]]['title']
   @memo = memos[params[:id]]['memo']
   erb :edit
@@ -62,17 +62,17 @@ patch '/memos/:id' do
   title = escape(params[:title])
   memo = escape(params[:memo])
 
-  memos = get_memos
+  memos = read_memos
   memos[params[:id]] = { 'title' => title, 'memo' => memo }
-  set_memos(memos)
+  save_memos(memos)
 
   redirect "/memos/#{params[:id]}"
 end
 
 delete '/memos/:id' do
-  memos = get_memos
+  memos = read_memos
   memos.delete(params[:id])
-  set_memos(memos)
+  save_memos(memos)
 
   redirect '/memos'
 end
