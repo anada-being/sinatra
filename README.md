@@ -1,5 +1,8 @@
 # Gemfile を作成
- bundle init
+terminalで下記を実行
+```
+bundle init
+```
 ## Gemをインストールする
 
 Gemfileに下記を追記する
@@ -36,6 +39,8 @@ inherit_gem:
 ```
 ## rubocopの実行
 
+terminalで下記を実行
+
 ```zsh
 % rubocop
 ```
@@ -50,6 +55,8 @@ linters:
     enabled: false
 ```
 ## 実行
+
+terminalで下記を実行
 
 ```sh
 $ bundle exec erblint --lint-all
