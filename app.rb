@@ -2,6 +2,7 @@
 
 require 'sinatra'
 require 'json'
+require 'cgi'
 
 enable :method_override
 FILE_PATH = 'memos.json'
@@ -14,6 +15,8 @@ def set_memos(memos)
   File.open(FILE_PATH,'w') { |f| JSON.dump(memos, f) }
 end
 
+def escape(text)
+  CGI.escapeHTML(text)
 end
 
 get '/' do
@@ -37,8 +40,8 @@ get '/memos/:id' do
 end
 
 post '/memos' do
-  title = params[:title]
-  memo = params[:memo]
+  title = escape(params[:title])
+  memo = escape(params[:memo])
 
   memos = get_memos
   id = (memos.keys.map(&:to_i).max + 1).to_s
@@ -56,8 +59,8 @@ get '/memos/:id/edit' do
 end
 
 patch '/memos/:id' do
-  title = params[:title]
-  memo = params[:memo]
+  title = escape(params[:title])
+  memo = escape(params[:memo])
 
   memos = get_memos
   memos[params[:id]] = { 'title' => title, 'memo' => memo }
