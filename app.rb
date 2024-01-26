@@ -5,7 +5,7 @@ require 'json'
 require 'erb'
 
 # controller
-class App < Sinatra::Base
+class App < Sinatra::Application
   FILE_PATH = 'memos.json'
 
   helpers do
