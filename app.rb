@@ -38,7 +38,8 @@ class App < Sinatra::Application
     memo = params[:memo]
 
     memos = read_memos
-    id = (memos.keys.map(&:to_i).max + 1).to_s
+    id = '1' if memos.keys.map(&:to_i).max == nil
+    id = (memos.keys.map(&:to_i).max + 1).to_s unless memos['1'] == nil
     memos[id] = { 'title' => title, 'memo' => memo }
     save_memos(memos)
 
