@@ -2,6 +2,8 @@
 
 require 'sinatra'
 require 'json'
+require 'erb'
+include ERB::Util
 
 enable :method_override
 FILE_PATH = 'memos.json'
