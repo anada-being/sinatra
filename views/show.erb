@@ -6,8 +6,8 @@
 </head>
 <body>
   <h1>メモアプリ</h1>
-    <p><%= @title %></p>
-    <p><%= @memo %></p>
+    <p><%= h(@title) %></p>
+    <p><%= h(@memo) %></p>
     <a class="btn" href="/memos">メモ一覧に戻る</a>
   <form method="get" action="/memos/<%= params[:id] %>/edit">
     <input type="submit" value="変更">
