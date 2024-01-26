@@ -5,17 +5,6 @@ bundle init
 ```
 ## Gemをインストールする
 
-Gemfileに下記を追記する
-```
-group :development do
-  gem 'rubocop-fjord', require: false
-end
-
-gem 'sinatra'
-gem 'puma' # or any other server
-gem 'redcarpet'
-gem 'erb_lint', require: false
-```
 terminalで下記を実行
 ```
 bundler install
