@@ -1,8 +1,3 @@
-# Gemfile を作成
-terminalで下記を実行
-```
-bundle init
-```
 ## Gemをインストールする
 
 terminalで下記を実行
