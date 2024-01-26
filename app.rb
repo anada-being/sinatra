@@ -29,20 +29,6 @@ class App < Sinatra::Application
     erb :top
   end
 
-  get '/memos/:id' do
-    memos = read_memos
-    @title = memos[params[:id]]['title']
-    @memo = memos[params[:id]]['memo']
-    erb :show
-  end
-
-  get '/memos/:id/edit' do
-    memos = read_memos
-    @title = memos[params[:id]]['title']
-    @memo = memos[params[:id]]['memo']
-    erb :edit
-  end
-
   get '/memos/new' do
     erb :new
   end
@@ -57,6 +43,20 @@ class App < Sinatra::Application
     save_memos(memos)
 
     redirect '/memos'
+  end
+
+  get '/memos/:id' do
+    memos = read_memos
+    @title = memos[params[:id]]['title']
+    @memo = memos[params[:id]]['memo']
+    erb :show
+  end
+
+  get '/memos/:id/edit' do
+    memos = read_memos
+    @title = memos[params[:id]]['title']
+    @memo = memos[params[:id]]['memo']
+    erb :edit
   end
 
   patch '/memos/:id' do
