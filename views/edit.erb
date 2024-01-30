@@ -9,10 +9,10 @@
   <form method="post" action="/memos/<%= params[:id] %>">
     <p>
     タイトル:
-    <input type="text" name="title" size="30" value="<%= @title %>">
+    <input type="text" name="title" size="30" value="<%= h(@title) %>">
     </p>
     <p>メモ：<br>
-    <textarea name="memo" cols="30" rows="5" placeholder="<%= @memo %>"></textarea></p>
+    <textarea name="memo" cols="30" rows="5"><%= h(@memo) %></textarea></p>
     <input type="hidden" name="_method" value="patch">
     <input type="submit" value="変更">
   </form>
