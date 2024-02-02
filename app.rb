@@ -6,9 +6,12 @@ require 'erb'
 
 # controller
 class App < Sinatra::Application
-
   helpers do
     include ERB::Util
+  end
+
+  def to_utf8(text)
+    text.force_encoding('utf-8')
   end
 
   def conn
@@ -16,15 +19,16 @@ class App < Sinatra::Application
   end
 
   def read_memos
-    conn.exec('SELECT * FROM memos ORDER BY id')
+    conn.exec('SELECT * FROM memos ORDER BY id').map { |r| { 'id' => r['id'], 'title' => to_utf8(r['title']), 'memo' => to_utf8(r['memo']) } }
   end
 
   def read_memo(id)
     result = conn.exec_params('SELECT * FROM memos WHERE id = $1;', [id])
+    result.map { |r| { 'id' => r['id'], 'title' => to_utf8(r['title']), 'memo' => to_utf8(r['memo']) } }
   end
 
   def create_memo(title, memo)
-    conn.exec_params('INSERT INTO memos (title, memo) VALUES ($1, $2);', [title, memo])
+    conn.exec_params('INSERT INTO memos (title = $1, memo = $2);', [title, memo])
   end
 
   def patch_memo(id, title, memo)
@@ -32,7 +36,7 @@ class App < Sinatra::Application
   end
 
   def delete_memo(id)
-    conn.exec_params('DELETE from memos where id = $1;',[id])
+    conn.exec_params('DELETE from memos where id = $1;', [id])
   end
 
   get '/' do
