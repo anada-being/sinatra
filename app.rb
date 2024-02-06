@@ -10,12 +10,17 @@ class App < Sinatra::Application
     include ERB::Util
   end
 
-  def to_utf8(text)
-    text.force_encoding('utf-8')
+  configure do
+    conn = PG.connect(dbname: 'db_memos')
+    conn.exec('create table IF NOT EXISTS memos (id serial, title TEXT, memo TEXT) ')
   end
 
   def conn
     @conn = PG.connect(dbname: 'db_memos')
+  end
+
+  def to_utf8(text)
+    text.force_encoding('utf-8')
   end
 
   def read_memos
@@ -28,7 +33,7 @@ class App < Sinatra::Application
   end
 
   def create_memo(title, memo)
-    conn.exec_params('INSERT INTO memos (title = $1, memo = $2);', [title, memo])
+    conn.exec_params('INSERT INTO memos (title, memo) VALUES ($1, $2);', [title, memo])
   end
 
   def patch_memo(id, title, memo)
