@@ -1,23 +1,42 @@
 # frozen_string_literal: true
 
 require 'sinatra/base'
-require 'json'
+require 'pg'
 require 'erb'
 
 # controller
 class App < Sinatra::Application
-  FILE_PATH = 'memos.json'
-
   helpers do
     include ERB::Util
   end
 
-  def read_memos
-    File.open(FILE_PATH) { |f| JSON.parse(f.read) }
+  def conn
+    @conn ||= PG.connect(dbname: 'db_memos')
+    result = @conn.exec("SELECT * FROM information_schema.tables WHERE table_name = 'memos'")
+    @conn.exec('create table IF NOT EXISTS memos (id serial, title TEXT, memo TEXT)') if result.values.empty?
+    @conn
   end
 
-  def save_memos(memos)
-    File.open(FILE_PATH, 'w') { |f| JSON.dump(memos, f) }
+  def read_memos
+    results = conn.exec('SELECT * FROM memos ORDER BY id')
+    results.map { |result| result.transform_keys(&:to_sym) }
+  end
+
+  def read_memo(id)
+    result = conn.exec_params('SELECT * FROM memos WHERE id = $1;', [id])
+    result[0].transform_keys(&:to_sym)
+  end
+
+  def create_memo(title, memo)
+    conn.exec_params('INSERT INTO memos (title, memo) VALUES ($1, $2);', [title, memo])
+  end
+
+  def patch_memo(id, title, memo)
+    conn.exec_params('UPDATE memos SET title = $1, memo = $2 WHERE id = $3;', [title, memo, id])
+  end
+
+  def delete_memo(id)
+    conn.exec_params('DELETE from memos where id = $1;', [id])
   end
 
   get '/' do
@@ -36,45 +55,35 @@ class App < Sinatra::Application
   post '/memos' do
     title = params[:title]
     memo = params[:memo]
-
-    memos = read_memos
-    id = '1' if memos.keys.map(&:to_i).max == nil
-    id = (memos.keys.map(&:to_i).max + 1).to_s unless memos['1'] == nil
-    memos[id] = { 'title' => title, 'memo' => memo }
-    save_memos(memos)
+    create_memo(title, memo)
 
     redirect '/memos'
   end
 
   get '/memos/:id' do
-    memos = read_memos
-    @title = memos[params[:id]]['title']
-    @memo = memos[params[:id]]['memo']
+    memo = read_memo(params[:id])
+    @title = memo[:title]
+    @memo = memo[:memo]
     erb :show
   end
 
   get '/memos/:id/edit' do
-    memos = read_memos
-    @title = memos[params[:id]]['title']
-    @memo = memos[params[:id]]['memo']
+    memos = read_memo(params[:id])
+    @title = memos[:title]
+    @memo = memos[:memo]
     erb :edit
   end
 
   patch '/memos/:id' do
     title = params[:title]
     memo = params[:memo]
-
-    memos = read_memos
-    memos[params[:id]] = { 'title' => title, 'memo' => memo }
-    save_memos(memos)
+    patch_memo(params[:id], title, memo)
 
     redirect "/memos/#{params[:id]}"
   end
 
   delete '/memos/:id' do
-    memos = read_memos
-    memos.delete(params[:id])
-    save_memos(memos)
+    delete_memo(params[:id])
 
     redirect '/memos'
   end

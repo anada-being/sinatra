@@ -10,9 +10,9 @@
   <button class="add" type="submit">追加</button>
   </form>
   <ul>
-    <% @memos.each do |id, post| %>
+    <% @memos.each do |memo| %>
       <li>
-        <a href="/memos/<%= id %>"><%= h(post["title"]) %></a>
+        <a href="/memos/<%= memo[:id] %>"><%= h(memo[:title]) %></a>
       </li>
     <% end %>
   </ul>
