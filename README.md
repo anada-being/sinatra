@@ -29,12 +29,12 @@ systemctl status postgresql@16-main.service
 
 postgresユーザーのままpostgresDBの中で下記コマンドを実行し、postgresユーザーのままアプリを実行するか
 ```
-CREATE DATABASE db_memos;
+CREATE DATABASE db_memos TEMPLATE = template0 ENCODING = 'UTF8';
 ```
 
 普段操作しているユーザーにCREATEの権限を渡して以下を実行する
 ```
-create database db_memos
+create database db_memos TEMPLATE = template0 ENCODING = 'UTF8'
 ```
 
 ## Gemをインストールする
